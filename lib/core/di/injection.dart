@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import '../network/api_client.dart';
 import '../../features/product/data/product_repository.dart';
 import '../../features/product/domain/product_service.dart';
+import '../../features/product/presentation/cubit/product_cubit.dart';
 
 // Inisialisasi sang 'Pelayan' (Injector) secara global
 final locator = GetIt.instance;
@@ -19,4 +20,5 @@ void setupLocator() {
   // registerFactory: Setiap kali dipanggil, Get_it akan memberikan instance baru.
   // Perhatikan locator(): Get_it otomatis mencari ProductRepository yang sudah terdaftar di atas.
   locator.registerFactory<ProductService>(() => ProductService(locator()));
+  locator.registerFactory<ProductCubit>(() => ProductCubit(locator()));
 }

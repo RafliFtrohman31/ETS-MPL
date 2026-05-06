@@ -19,7 +19,7 @@ class ApiClient {
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          logger.s('BERHASIL [${response.statusCode}]: ${response.requestOptions.uri}');
+          logger.i('BERHASIL [${response.statusCode}]: ${response.requestOptions.uri}');
           return handler.next(response);
         },
         onError: (DioException e, handler) {
