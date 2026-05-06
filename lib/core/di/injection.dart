@@ -3,6 +3,7 @@ import '../network/api_client.dart';
 import '../../features/product/data/product_repository.dart';
 import '../../features/product/domain/product_service.dart';
 import '../../features/product/presentation/cubit/product_cubit.dart';
+import '../../features/bookmark/data/isar_service.dart';
 
 // Inisialisasi sang 'Pelayan' (Injector) secara global
 final locator = GetIt.instance;
@@ -21,4 +22,5 @@ void setupLocator() {
   // Perhatikan locator(): Get_it otomatis mencari ProductRepository yang sudah terdaftar di atas.
   locator.registerFactory<ProductService>(() => ProductService(locator()));
   locator.registerFactory<ProductCubit>(() => ProductCubit(locator()));
+  locator.registerLazySingleton<IsarService>(() => IsarService());
 }
