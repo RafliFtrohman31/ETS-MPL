@@ -22,13 +22,18 @@ const BookmarkSchema = CollectionSchema(
       name: r'productId',
       type: IsarType.string,
     ),
-    r'productName': PropertySchema(
+    r'productImage': PropertySchema(
       id: 1,
+      name: r'productImage',
+      type: IsarType.string,
+    ),
+    r'productName': PropertySchema(
+      id: 2,
       name: r'productName',
       type: IsarType.string,
     ),
     r'timestamp': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'timestamp',
       type: IsarType.string,
     )
@@ -54,6 +59,7 @@ int _bookmarkEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.productId.length * 3;
+  bytesCount += 3 + object.productImage.length * 3;
   bytesCount += 3 + object.productName.length * 3;
   bytesCount += 3 + object.timestamp.length * 3;
   return bytesCount;
@@ -66,8 +72,9 @@ void _bookmarkSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.productId);
-  writer.writeString(offsets[1], object.productName);
-  writer.writeString(offsets[2], object.timestamp);
+  writer.writeString(offsets[1], object.productImage);
+  writer.writeString(offsets[2], object.productName);
+  writer.writeString(offsets[3], object.timestamp);
 }
 
 Bookmark _bookmarkDeserialize(
@@ -79,8 +86,9 @@ Bookmark _bookmarkDeserialize(
   final object = Bookmark();
   object.id = id;
   object.productId = reader.readString(offsets[0]);
-  object.productName = reader.readString(offsets[1]);
-  object.timestamp = reader.readString(offsets[2]);
+  object.productImage = reader.readString(offsets[1]);
+  object.productName = reader.readString(offsets[2]);
+  object.timestamp = reader.readString(offsets[3]);
   return object;
 }
 
@@ -96,6 +104,8 @@ P _bookmarkDeserializeProp<P>(
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -369,6 +379,140 @@ extension BookmarkQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'productId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterFilterCondition> productImageEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'productImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterFilterCondition>
+      productImageGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'productImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterFilterCondition> productImageLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'productImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterFilterCondition> productImageBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'productImage',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterFilterCondition>
+      productImageStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'productImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterFilterCondition> productImageEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'productImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterFilterCondition> productImageContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'productImage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterFilterCondition> productImageMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'productImage',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterFilterCondition>
+      productImageIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'productImage',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterFilterCondition>
+      productImageIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'productImage',
         value: '',
       ));
     });
@@ -657,6 +801,18 @@ extension BookmarkQuerySortBy on QueryBuilder<Bookmark, Bookmark, QSortBy> {
     });
   }
 
+  QueryBuilder<Bookmark, Bookmark, QAfterSortBy> sortByProductImage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'productImage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterSortBy> sortByProductImageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'productImage', Sort.desc);
+    });
+  }
+
   QueryBuilder<Bookmark, Bookmark, QAfterSortBy> sortByProductName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'productName', Sort.asc);
@@ -708,6 +864,18 @@ extension BookmarkQuerySortThenBy
     });
   }
 
+  QueryBuilder<Bookmark, Bookmark, QAfterSortBy> thenByProductImage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'productImage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Bookmark, Bookmark, QAfterSortBy> thenByProductImageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'productImage', Sort.desc);
+    });
+  }
+
   QueryBuilder<Bookmark, Bookmark, QAfterSortBy> thenByProductName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'productName', Sort.asc);
@@ -742,6 +910,13 @@ extension BookmarkQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Bookmark, Bookmark, QDistinct> distinctByProductImage(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'productImage', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Bookmark, Bookmark, QDistinct> distinctByProductName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -768,6 +943,12 @@ extension BookmarkQueryProperty
   QueryBuilder<Bookmark, String, QQueryOperations> productIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'productId');
+    });
+  }
+
+  QueryBuilder<Bookmark, String, QQueryOperations> productImageProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'productImage');
     });
   }
 

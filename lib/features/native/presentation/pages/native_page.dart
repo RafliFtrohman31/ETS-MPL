@@ -88,7 +88,7 @@ class _NativePageState extends State<NativePage> {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
+                    color: Colors.black.withValues(alpha: 0.03),
                     blurRadius: 15,
                     offset: const Offset(0, 10),
                   ),
@@ -157,7 +157,7 @@ class _NativePageState extends State<NativePage> {
             Text(
               "NIM: 20123048 - MUHAMAD TAUPIK",
               style: TextStyle(
-                color: Colors.grey.withOpacity(0.5),
+                color: Colors.grey.withValues(alpha: 0.5),
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),
@@ -230,7 +230,7 @@ class _NativePageState extends State<NativePage> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha:  0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: contentColor, size: 28),
@@ -251,7 +251,7 @@ class _NativePageState extends State<NativePage> {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: contentColor.withOpacity(0.7),
+                      color: contentColor.withValues(alpha: 0.7),
                       fontSize: 11,
                     ),
                   ),
@@ -260,7 +260,7 @@ class _NativePageState extends State<NativePage> {
             ),
             Icon(
               Icons.arrow_forward_ios_rounded,
-              color: contentColor.withOpacity(0.3),
+              color: contentColor.withValues(alpha: 0.3),
               size: 14,
             ),
           ],
