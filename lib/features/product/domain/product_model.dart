@@ -9,21 +9,37 @@ class Product {
     required this.image,
   });
 
-  // Untuk mengubah JSON dari API menjadi Objek Dart[cite: 4]
   factory Product.fromJson(Map<String, dynamic> json) {
+    String imageUrl = '';
+    
+    // Penyesuaian format gambar agar fleksibel sesuai standar industri[cite: 4, 7]
+    if (json['image'] != null) {
+      imageUrl = json['image'].toString();
+    } else if (json['images'] != null && (json['images'] as List).isNotEmpty) {
+      imageUrl = json['images'][0].toString();
+      // Membersihkan karakter aneh jika data berasal dari API yang berbeda
+      imageUrl = imageUrl.replaceAll('[', '').replaceAll(']', '').replaceAll('"', '');
+    }
+
     return Product(
       id: json['id'].toString(),
-      name: json['title'] ?? 'Tanpa Nama',
-      image: json['image'] ?? '',
+      // Sesuai standar Clean Architecture, data mentah dibiarkan murni di Model
+      // Manipulasi label NIM dilakukan di level Repository/Service
+      name: json['title'] ?? 'Tanpa Nama', 
+      image: imageUrl.isNotEmpty ? imageUrl : 'https://via.placeholder.com/150',
     );
   }
 
-  // Fungsi pembantu untuk memanipulasi data (Logika NIM)
-  Product copyWith({String? name}) {
+  // Method copyWith wajib ada untuk menerapkan logika NIM Genap di Repository
+  Product copyWith({
+    String? id,
+    String? name,
+    String? image,
+  }) {
     return Product(
-      id: id,
+      id: id ?? this.id,
       name: name ?? this.name,
-      image: image,
+      image: image ?? this.image,
     );
   }
 }

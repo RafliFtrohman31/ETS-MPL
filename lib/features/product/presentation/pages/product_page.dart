@@ -1,60 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../cubit/product_cubit.dart';
-import '../cubit/product_state.dart';
+import 'package:utd_advanced_app/features/product/presentation/cubit/product_cubit.dart';
+import 'package:utd_advanced_app/features/product/presentation/cubit/product_state.dart';
 
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Definisi palet warna agar konsisten dengan DetailPage
-    const Color primaryColor = Color(0xFF101820); // Deep Navy
-    const Color accentColor = Color(0xFF8CFF00);  // Lime Green
+    // Palet Warna Soft Teal & White (Cerah & Kalem)
+    const Color primaryColor = Color(0xFF008080); 
+    const Color secondaryColor = Color(0xFFE0F2F1); 
+    const Color backgroundColor = Color(0xFFF9FBFB); 
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text(
-          'JAISY KATALOG',
+          'RAFLI STORE', // Identitas Rafly[cite: 8]
           style: TextStyle(
-            fontWeight: FontWeight.bold, 
-            letterSpacing: 1.5,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
             color: Colors.white,
-            fontSize: 18,
+            fontSize: 20,
           ),
         ),
         backgroundColor: primaryColor,
         elevation: 0,
         centerTitle: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        ),
         actions: [
+          // Tombol menuju halaman Bookmark (Modul 6 - Isar)[cite: 2, 8]
           IconButton(
-            icon: const Icon(Icons.bookmark_outline, color: Colors.white),
-            onPressed: () => context.push('/todo'),
+            icon: const Icon(Icons.bookmarks_outlined, color: Colors.white),
+            tooltip: 'Koleksi Bookmark',
+            onPressed: () => context.push('/bookmarks'), 
           ),
+          // Tombol menuju halaman Native (Modul 7 - Platform Channels)[cite: 1, 8]
           IconButton(
-            icon: const Icon(Icons.settings_cell_outlined, color: Colors.white),
+            icon: const Icon(Icons.settings_suggest_outlined, color: Colors.white),
+            tooltip: 'Fitur Native',
             onPressed: () => context.push('/native'),
           ),
         ],
       ),
       body: BlocBuilder<ProductCubit, ProductState>(
         builder: (context, state) {
-          // 1. Tampilan saat Loading (Sesuai NIM 6 detik)
+          // 1. Tampilan Loading[cite: 5]
           if (state is ProductLoading) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(color: primaryColor),
-                  SizedBox(height: 20),
+                  const CircularProgressIndicator(color: primaryColor),
+                  const SizedBox(height: 24),
                   Text(
-                    'MENYIAPKAN KOLEKSI...',
+                    'MENYIAPKAN KOLEKSI RAFLI...',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                      color: primaryColor,
+                      color: primaryColor.withValues(alpha: 0.7),
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -62,88 +69,94 @@ class ProductPage extends StatelessWidget {
             );
           }
 
-          // 2. Tampilan saat Sukses
+          // 2. Tampilan Sukses (Katalog Produk)[cite: 5, 8]
           if (state is ProductLoaded) {
             return ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
               itemCount: state.products.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final item = state.products[index];
                 return GestureDetector(
-                  onTap: () => context.push('/detail/${item.id}'),
+                  onTap: () => context.push('/detail/${item.id}'), // Navigasi Detail
                   child: Container(
+                    padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF8F8F8),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade200),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        children: [
-                          // Thumbnail Produk
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              color: Colors.white,
-                              child: Image.network(
-                                item.image,
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(Icons.broken_image, size: 40),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: secondaryColor,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              item.image,
+                              width: 70,
+                              height: 70,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.image_not_supported_rounded, color: primaryColor),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 18),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.name, // Sudah mengandung "[Promo Ongkir]" dari Repository[cite: 8]
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Colors.black87,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          // Info Produk
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.name.toUpperCase(),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: primaryColor,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                              const SizedBox(height: 4),
+                              Text(
+                                'NIM: 20123048 • ID: ${item.id}', // Logika Personal Rafly[cite: 8]
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 11,
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'ID: ${item.id}',
+                              ),
+                              const SizedBox(height: 10),
+                              // Badge Promo Kalem sesuai Syarat NIM Genap[cite: 8]
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFF4E5), 
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Text(
+                                  "PROMO ONGKIR", 
                                   style: TextStyle(
-                                    color: Colors.grey.shade600,
-                                    fontSize: 12,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFFE67E22),
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                // Badge Promo Mini
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: accentColor.withValues(alpha: .2),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: const Text(
-                                    "FREE ONGKIR",
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          const Icon(Icons.chevron_right, color: primaryColor),
-                        ],
-                      ),
+                        ),
+                        const Icon(Icons.chevron_right_rounded, color: Colors.grey),
+                      ],
                     ),
                   ),
                 );
@@ -151,32 +164,25 @@ class ProductPage extends StatelessWidget {
             );
           }
 
-          // 3. Tampilan saat Error
+          // 3. Tampilan Error[cite: 5]
           if (state is ProductError) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, color: Colors.red, size: 48),
-                  const SizedBox(height: 16),
-                  Text(state.message, style: const TextStyle(color: Colors.red)),
-                ],
-              ),
+              child: Text(state.message, style: const TextStyle(color: Colors.red)),
             );
           }
 
           return const SizedBox.shrink();
         },
       ),
-      // Floating Action Button ala Jaisy Exclusive
+      // Floating Action Button (Modul 5 - Crypto Hub)[cite: 3, 8]
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/crypto'),
         label: const Text(
-          'LIVE CRYPTO',
-          style: TextStyle(fontWeight: FontWeight.bold, color: primaryColor),
+          'CRYPTO HUB',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        icon: const Icon(Icons.analytics_outlined, color: primaryColor),
-        backgroundColor: accentColor,
+        icon: const Icon(Icons.auto_graph_rounded, color: Colors.white),
+        backgroundColor: primaryColor,
         elevation: 4,
       ),
     );

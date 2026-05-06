@@ -3,8 +3,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
-// 1. FUNGSI BERAT DI LUAR CLASS (Isolate)
-int tugasMenghitungBerat(int jumlahLooping) {
+// 1. FUNGSI ISOLATE (MODUL 5)
+int tugasMenghitungBeratRafli(int jumlahLooping) {
   int hasil = 0;
   for (int i = 0; i < jumlahLooping; i++) {
     hasil += i;
@@ -27,7 +27,7 @@ class _CryptoPageState extends State<CryptoPage> {
   @override
   void initState() {
     super.initState();
-    // MENGGUNAKAN API BINANCE
+    // INTEGRASI WEBSOCKET (MODUL 5) - BINANCE API
     _channel = WebSocketChannel.connect(
       Uri.parse('wss://data-stream.binance.vision/ws/btcusdt@trade'),
     );
@@ -35,93 +35,85 @@ class _CryptoPageState extends State<CryptoPage> {
 
   @override
   void dispose() {
-    _channel.sink.close(); // Cegah kebocoran memori
+    _channel.sink.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryColor = Color(0xFF101820); // Deep Navy
-    const Color accentColor = Color(0xFF8CFF00);  // Lime Green
+    // Palet Warna Cerah & Kalem (Soft Teal Theme)
+    const Color primaryColor = Color(0xFF008080); // Teal
+    const Color secondaryColor = Color(0xFFE0F2F1); // Soft Teal
+    const Color backgroundColor = Color(0xFFF9FBFB);
 
     return Scaffold(
-      backgroundColor: primaryColor,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text(
-          'JAISY CRYPTO HUB',
-          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2, fontSize: 16),
+          'RAFLI CRYPTO HUB',
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: Colors.white, letterSpacing: 1.1),
         ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
+        backgroundColor: primaryColor,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(20))),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [primaryColor, primaryColor.withValues(alpha: 0.8)],
-          ),
-        ),
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header Info Personal (Glassmorphism look)
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            const SizedBox(height: 20),
+            // HEADER INFO OPERATOR (DETAIL TAMBAHAN)
+            _buildOperatorCard(primaryColor, secondaryColor),
+
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
                 children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('LIVE MONITORING', style: TextStyle(color: accentColor, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 2)),
-                      Text('BTC / USDT TRADE', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      const Text('OPERATOR', style: TextStyle(color: Colors.white38, fontSize: 10)),
-                      Text('JAISY - 66', style: TextStyle(color: accentColor, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+                  // KARTU HARGA UTAMA
+                  _buildModernPriceCard(primaryColor, secondaryColor),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // GRID DETAIL STATISTIK (TAMBAHAN DETAIL)
+                  _buildMarketStats(primaryColor),
 
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    // Kartu Harga Real-time
-                    _buildModernPriceCard(accentColor),
+                  const SizedBox(height: 30),
 
-                    const SizedBox(height: 40),
-
-                    // Indikator Responsivitas UI
-                    const Text('SYSTEM STABILITY CHECK', style: TextStyle(color: Colors.white38, fontSize: 10, letterSpacing: 2)),
-                    const SizedBox(height: 15),
-                    CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(_isCalculating ? Colors.redAccent : accentColor),
+                  // INDIKATOR STABILITAS SISTEM
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.grey.shade100),
                     ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('SYSTEM STABILITY', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.black54)),
+                            Icon(Icons.verified_user_outlined, size: 18, color: _isCalculating ? Colors.orange : Colors.green),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        LinearProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(_isCalculating ? Colors.orange : primaryColor),
+                          backgroundColor: secondaryColor,
+                        ),
+                        const SizedBox(height: 10),
+                        const Text('ISOLATE AKAN MENCEGAH UI FREEZING SAAT KALKULASI BERAT', 
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 9, color: Colors.grey, fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
 
-                    const SizedBox(height: 50),
+                  const SizedBox(height: 30),
 
-                    // Tombol Kalkulasi Isolate
-                    _buildNeonButton(primaryColor, accentColor),
-                  ],
-                ),
+                  // TOMBOL EXECUTE ISOLATE (NIM 48)
+                  _buildExecuteButton(primaryColor),
+                ],
               ),
             ),
           ],
@@ -130,40 +122,62 @@ class _CryptoPageState extends State<CryptoPage> {
     );
   }
 
-  Widget _buildModernPriceCard(Color accent) {
+  Widget _buildOperatorCard(Color primary, Color secondary) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      decoration: BoxDecoration(
+        color: secondary,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Row(
+            children: [
+              CircleAvatar(radius: 4, backgroundColor: Colors.green),
+              SizedBox(width: 8),
+              Text('LIVE NETWORK', style: TextStyle(color: Colors.black54, fontSize: 10, fontWeight: FontWeight.w800)),
+            ],
+          ),
+          Text('OPERATOR: RAFLI - 48', style: TextStyle(color: primary, fontSize: 11, fontWeight: FontWeight.w900)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModernPriceCard(Color primary, Color secondary) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(40),
+      padding: const EdgeInsets.all(35),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.03),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: accent.withValues(alpha: 0.3), width: 1),
-        boxShadow: [
-          BoxShadow(color: accent.withValues(alpha: 0.05), blurRadius: 40, spreadRadius: -10),
-        ],
+        boxShadow: [BoxShadow(color: primary.withValues(alpha: 0.05), blurRadius: 20, offset: const Offset(0, 10))],
+        border: Border.all(color: Colors.grey.shade100),
       ),
       child: Column(
         children: [
-          Icon(Icons.auto_graph_rounded, size: 50, color: accent),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: secondary, shape: BoxShape.circle),
+            child: Icon(Icons.currency_bitcoin_rounded, size: 40, color: primary),
+          ),
           const SizedBox(height: 20),
           StreamBuilder(
             stream: _channel.stream,
             builder: (context, snapshot) {
-              if (snapshot.hasError) return const Text('LINK ERROR', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold));
-              if (!snapshot.hasData) return const CircularProgressIndicator(color: Colors.white24);
+              if (snapshot.hasError) return const Text('ERROR CONNECTION', style: TextStyle(color: Colors.red));
+              if (!snapshot.hasData) return const CircularProgressIndicator();
 
-              final Map<String, dynamic> dataJson = jsonDecode(snapshot.data.toString());
-              final String price = dataJson['p'] ?? '0.00';
-              _currentPrice = double.parse(price).toStringAsFixed(2);
+              final data = jsonDecode(snapshot.data.toString());
+              _currentPrice = double.parse(data['p'] ?? '0').toStringAsFixed(2);
 
               return Column(
                 children: [
-                  Text(
-                    '\$ $_currentPrice',
-                    style: const TextStyle(fontSize: 42, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: -1),
-                  ),
+                  Text('\$ $_currentPrice', style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w900, color: Colors.black87)),
                   const SizedBox(height: 5),
-                  Text('REAL-TIME MARKET DATA', style: TextStyle(color: accent.withValues(alpha: 0.6), fontSize: 10, fontWeight: FontWeight.bold)),
+                  const Text('BTC/USDT REAL-TIME', style: TextStyle(color: Colors.grey, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1)),
                 ],
               );
             },
@@ -173,51 +187,69 @@ class _CryptoPageState extends State<CryptoPage> {
     );
   }
 
-  Widget _buildNeonButton(Color primary, Color accent) {
-    return Column(
+  Widget _buildMarketStats(Color primary) {
+    return Row(
       children: [
-        SizedBox(
-          width: double.infinity,
-          height: 65,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _isCalculating ? Colors.transparent : accent,
-              foregroundColor: primary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-                side: BorderSide(color: accent, width: 2),
-              ),
-              elevation: _isCalculating ? 0 : 10,
-              shadowColor: accent.withValues(alpha: 0.5),
-            ),
-            onPressed: _isCalculating ? null : () async {
-              setState(() => _isCalculating = true);
-              debugPrint("Memulai Isolate Jaisy NIM 66...");
-              
-              const int nimLoopFactor = 66 * 10000000;
-              final result = await compute(tugasMenghitungBerat, nimLoopFactor);
-
-              setState(() => _isCalculating = false);
-
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('COMPUTATION SUCCESS: $result', style: const TextStyle(fontWeight: FontWeight.bold)),
-                    backgroundColor: accent,
-                    margin: const EdgeInsets.all(20),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
-            },
-            child: _isCalculating 
-              ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-              : const Text('EXECUTE HEAVY CALCULATION (NIM 66)', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),
-          ),
-        ),
-        const SizedBox(height: 12),
-        const Text('ISOLATE WILL PREVENT UI FREEZING', style: TextStyle(color: Colors.white24, fontSize: 9, letterSpacing: 1)),
+        _statItem("VOL (24H)", "1.2B", Icons.bar_chart_rounded, primary),
+        const SizedBox(width: 12),
+        _statItem("HIGH", "64.2K", Icons.trending_up_rounded, Colors.green),
+        const SizedBox(width: 12),
+        _statItem("LOW", "61.8K", Icons.trending_down_rounded, Colors.red),
       ],
+    );
+  }
+
+  Widget _statItem(String label, String val, IconData icon, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: Colors.grey.shade100),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(height: 8),
+            Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey)),
+            Text(val, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black87)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExecuteButton(Color primary) {
+    return SizedBox(
+      width: double.infinity,
+      height: 60,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _isCalculating ? Colors.grey : primary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          elevation: 0,
+        ),
+        onPressed: _isCalculating ? null : () async {
+          setState(() => _isCalculating = true);
+          
+          // LOGIKA NIM 48: 48 * 10.000.000 = 480 Juta kali looping
+          const int countFactor = 48 * 10000000; 
+          final result = await compute(tugasMenghitungBeratRafli, countFactor);
+
+          setState(() => _isCalculating = false);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('NIM 48 SUCCESS: $result'),
+              backgroundColor: primary,
+              behavior: SnackBarBehavior.floating,
+            ));
+          }
+        },
+        child: _isCalculating 
+          ? const CircularProgressIndicator(color: Colors.white)
+          : const Text('CALCULATE TAX (NIM 48 ISOLATE)', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+      ),
     );
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/di/injection.dart';
-import 'package:utd_advanced_app/features/bookmark/data/isar_service.dart';
+import 'package:utd_advanced_app/features/bookmark/data/isar_service.dart'; // Pastikan nama package sesuai
 import '../../domain/product_service.dart';
 import '../../domain/product_model.dart';
+import 'package:utd_advanced_app/features/bookmark/domain/bookmark_model.dart';
 
 class DetailPage extends StatelessWidget {
   final String productId;
@@ -14,26 +15,22 @@ class DetailPage extends StatelessWidget {
     final productService = locator<ProductService>();
     final isarService = locator<IsarService>();
 
-    // Warna Pengganti Hitam (Deep Navy/Charcoal)
-    const Color primaryColor = Color(0xFF101820); // Navy Gelap yang sangat elegan
-    const Color accentColor = Color(0xFF8CFF00); // Hijau Lime yang cerah
+    // Palet Warna Kalem & Cerah (Soft Teal Theme)
+    const Color primaryColor = Color(0xFF008080); // Teal Kalem
+    const Color secondaryColor = Color(0xFFE0F2F1); // Teal Muda
+    const Color accentColor = Color(0xFFFFF4E5); // Soft Orange untuk badge
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
-          "JAISY EXCLUSIVE",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+          "RAFLI EXCLUSIVE",
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: Colors.white, letterSpacing: 1.1),
         ),
         backgroundColor: primaryColor,
         elevation: 0,
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_bag_outlined, color: Colors.white),
-            onPressed: () {},
-          ),
-        ],
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: FutureBuilder<Product?>(
         future: productService.fetchProductDetail(productId),
@@ -55,30 +52,35 @@ class DetailPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Area Gambar dengan Badge Free Ongkir (NIM Genap)
+                      // Area Gambar dengan Background Lembut
                       Stack(
                         children: [
                           Container(
-                            height: 350,
+                            height: 380,
                             width: double.infinity,
-                            color: const Color(0xFFF8F8F8),
-                            child: Image.network(product.image, fit: BoxFit.contain),
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFF9FBFB),
+                              borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+                            ),
+                            padding: const EdgeInsets.all(30),
+                            child: Hero(
+                              tag: product.id,
+                              child: Image.network(product.image, fit: BoxFit.contain),
+                            ),
                           ),
+                          // Badge Promo NIM Genap (8)[cite: 8]
                           Positioned(
-                            top: 16,
-                            left: 16,
+                            top: 20,
+                            right: 20,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
                                 color: accentColor,
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Row(
-                                children: [
-                                  Icon(Icons.local_shipping, size: 16),
-                                  SizedBox(width: 4),
-                                  Text("FREE ONGKIR", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                                ],
+                              child: const Text(
+                                "PROMO ONGKIR",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFFE67E22)),
                               ),
                             ),
                           ),
@@ -86,32 +88,36 @@ class DetailPage extends StatelessWidget {
                       ),
                       
                       Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(24.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${product.name} [PROMO ONGKIR]",
-                              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: primaryColor),
+                              "NIM: 20123048",
+                              style: TextStyle(color: primaryColor.withValues(alpha: 0.6), fontWeight: FontWeight.w600, fontSize: 12),
                             ),
                             const SizedBox(height: 8),
-                            const Text("Rp249.000", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent)),
-                            const Divider(height: 32),
-                            const Row(
-                              children: [
-                                Icon(Icons.description_outlined, size: 20),
-                                SizedBox(width: 8),
-                                Text("DESKRIPSI", style: TextStyle(fontWeight: FontWeight.bold)),
-                              ],
+                            Text(
+                              product.name,
+                              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
                             ),
                             const SizedBox(height: 12),
                             const Text(
-                              "Produk eksklusif ini dikurasi secara real-time dari API publik. Material berkualitas tinggi dengan finishing detail yang presisi.",
-                              style: TextStyle(fontSize: 15, color: Colors.black54, height: 1.5),
+                              "Rp249.000", 
+                              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: primaryColor),
                             ),
-                            const SizedBox(height: 20),
-                            // Info Kualitas (Style Grid kecil)
-                            _buildFeatureInfo(),
+                            const SizedBox(height: 24),
+                            const Text(
+                              "DESKRIPSI PRODUK",
+                              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14, letterSpacing: 1.0, color: Colors.black54),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              "Koleksi eksklusif dari Rafly Store. Produk ini diproses melalui API publik dengan validasi kualitas tinggi. Cocok untuk penggunaan harian maupun profesional.",
+                              style: TextStyle(fontSize: 15, color: Colors.grey.shade600, height: 1.6),
+                            ),
+                            const SizedBox(height: 30),
+                            _buildInfoGrid(secondaryColor, primaryColor),
                           ],
                         ),
                       ),
@@ -120,50 +126,8 @@ class DetailPage extends StatelessWidget {
                 ),
               ),
               
-              // Bottom Action Bar (Tombol Tambah ke Bookmark)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))],
-                ),
-                child: Row(
-                  children: [
-                    _buildIconButton(Icons.chat_bubble_outline),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: SizedBox(
-                        height: 50,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor,
-                            foregroundColor: primaryColor,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
-                          onPressed: () async {
-                            // LOGIKA: Simpan ke Isar dengan Timestamp
-                            await isarService.saveBookmark(product.name, product.image);
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Berhasil disimpan ke Bookmark Jaisy!'), backgroundColor: primaryColor),
-                              );
-                            }
-                          },
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.bookmark_add),
-                              SizedBox(width: 8),
-                              Text("TAMBAH KE BOOKMARK", style: TextStyle(fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Bottom Bar (Tombol Bookmark Isar)
+              _buildBottomAction(context, isarService, product, primaryColor),
             ],
           );
         },
@@ -171,46 +135,98 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildIconButton(IconData icon) {
+  Widget _buildBottomAction(BuildContext context, IsarService isarService, Product product, Color primaryColor) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 20, offset: const Offset(0, -5))],
       ),
-      child: Icon(icon, color: Colors.black87),
+      child: SafeArea(
+        child: Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.share_outlined, color: Colors.black87),
+                onPressed: () {},
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: SizedBox(
+                height: 55,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    elevation: 0,
+                  ),
+                  onPressed: () async {
+                    // LOGIKA: Simpan ke Isar dengan Timestamp (Syarat ETS)[cite: 8]
+                    final now = DateTime.now();
+                    final timeStr = "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+                    
+                    final newBookmark = Bookmark()
+                      ..productId = product.id
+                      ..productName = product.name
+                      ..timestamp = "Disimpan pada $timeStr";
+
+                    await isarService.saveBookmark(newBookmark);
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Tersimpan di Koleksi Rafly! ($timeStr)'),
+                          backgroundColor: primaryColor,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text(
+                    "TAMBAH KE BOOKMARK",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 15),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildFeatureInfo() {
+  Widget _buildInfoGrid(Color secondaryColor, Color primaryColor) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _infoCard(Icons.verified_user_outlined, "Original", secondaryColor, primaryColor),
+        _infoCard(Icons.local_shipping_outlined, "Gratis Pos", secondaryColor, primaryColor),
+        _infoCard(Icons.workspace_premium_outlined, "Best Seller", secondaryColor, primaryColor),
+      ],
+    );
+  }
+
+  Widget _infoCard(IconData icon, String title, Color bgColor, Color iconColor) {
     return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: Colors.grey.shade50, borderRadius: BorderRadius.circular(12)),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      width: 100,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
         children: [
-          _FeatureItem(Icons.verified_outlined, "Premium"),
-          _FeatureItem(Icons.history, "7 Hari"),
-          _FeatureItem(Icons.speed, "Cepat"),
+          Icon(icon, color: iconColor, size: 24),
+          const SizedBox(height: 8),
+          Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black54)),
         ],
       ),
-    );
-  }
-}
-
-class _FeatureItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  const _FeatureItem(this.icon, this.label);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon, size: 20, color: Colors.green),
-        const SizedBox(height: 4),
-        Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-      ],
     );
   }
 }

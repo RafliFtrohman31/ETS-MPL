@@ -12,99 +12,113 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    // LOGIKA NIM: Delay 6 detik sesuai digit terakhir NIM 20123066
-    Future.delayed(const Duration(seconds: 6), () {
+    // LOGIKA NIM RAFLI: Delay 8 detik sesuai digit terakhir NIM 20123048
+    Future.delayed(const Duration(seconds: 8), () {
       if (mounted) context.go('/');
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Konsistensi palet warna Jaisy Exclusive
-    const Color primaryColor = Color(0xFF101820); // Deep Navy
-    const Color accentColor = Color(0xFF8CFF00);  // Lime Green
+    // Palet Warna Cerah & Kalem (Soft Teal Theme)
+    const Color primaryColor = Color(0xFF008080); // Teal Kalem
+    const Color backgroundColor = Color(0xFFF9FBFB); // Putih bersih kalem
 
     return Scaffold(
-      backgroundColor: primaryColor,
+      backgroundColor: backgroundColor,
       body: Stack(
         children: [
-          // Dekorasi Background (Lingkaran halus agar tidak kaku)
+          // Dekorasi Lingkaran Halus (Aksen Kalem)
           Positioned(
-            top: -100,
-            right: -100,
+            top: -50,
+            left: -50,
             child: CircleAvatar(
-              radius: 150,
-              backgroundColor: accentColor.withValues(alpha: 0.05),
+              radius: 120,
+              backgroundColor: primaryColor.withValues(alpha: 0.05),
             ),
           ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // LOGO BARU: Menggunakan Container dengan Border Gaya Cyber
+                // LOGO RAFLI STORE: Elegan & Minimalis
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(25),
                   decoration: BoxDecoration(
-                    border: Border.all(color: accentColor, width: 4),
-                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: primaryColor.withValues(alpha: 0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
                   ),
                   child: const Icon(
-                    Icons.bolt_rounded, // Ikon petir untuk kesan energi/cepat
-                    size: 80,
-                    color: accentColor,
+                    Icons.shopping_bag_rounded, // Ikon tas belanja
+                    size: 70,
+                    color: primaryColor,
                   ),
                 ),
-                const SizedBox(height: 30),
-                // JUDUL DENGAN TIPOGRAFI PREMIUM
+                const SizedBox(height: 40),
+                // JUDUL TOKO
                 const Text(
-                  'JAISY',
+                  'RAFLI',
                   style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 8,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900,
+                    color: primaryColor,
+                    letterSpacing: 6,
                   ),
                 ),
-                const Text(
-                  'EXCLUSIVE STORE',
+                Text(
+                  'STORE EXCLUSIVE',
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: accentColor,
-                    letterSpacing: 4,
+                    fontWeight: FontWeight.w600,
+                    color: primaryColor.withValues(alpha: 0.6),
+                    letterSpacing: 3,
                   ),
                 ),
                 const SizedBox(height: 60),
-                // LOADING INDICATOR
-                const SizedBox(
-                  width: 40,
+                // LOADING INDICATOR KALEM
+                SizedBox(
+                  width: 150,
                   child: LinearProgressIndicator(
-                    backgroundColor: Colors.white10,
-                    color: accentColor,
+                    backgroundColor: primaryColor.withValues(alpha: 0.1),
+                    color: primaryColor,
+                    minHeight: 2,
                   ),
                 ),
-                const SizedBox(height: 20),
-                // IDENTITAS NIM
-                const Text(
-                  'NIM: 20123066',
+                const SizedBox(height: 25),
+                // IDENTITAS PERSONAL
+                Text(
+                  'NIM: 20123048',
                   style: TextStyle(
-                    color: Colors.white38,
-                    fontSize: 12,
-                    letterSpacing: 1,
+                    color: Colors.grey.shade400,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 1.5,
                   ),
                 ),
               ],
             ),
           ),
-          // FOOTER TEKS
-          const Positioned(
-            bottom: 40,
+          // FOOTER
+          Positioned(
+            bottom: 50,
             left: 0,
             right: 0,
             child: Center(
               child: Text(
-                'EST. 2026',
-                style: TextStyle(color: Colors.white24, fontWeight: FontWeight.bold),
+                'DESIGNED BY Rafli Faturohman',
+                style: TextStyle(
+                  color: Colors.grey.shade300,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                ),
               ),
             ),
           ),
