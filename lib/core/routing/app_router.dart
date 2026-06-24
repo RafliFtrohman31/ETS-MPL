@@ -8,7 +8,9 @@ import '../../features/product/presentation/pages/product_page.dart';
 import '../../features/product/presentation/pages/detail_page.dart';
 import 'package:utd_advanced_app/features/crypto/presentation/pages/crypto_page.dart';
 import '../../features/native/presentation/pages/native_page.dart';
-import '../../features/bookmark/presentation/pages/bookmark_page.dart'; // UBAH: Arahkan ke BookmarkPage
+import '../../features/bookmark/presentation/pages/bookmark_page.dart'; 
+import '../../features/sync/presentation/pages/background_sync_page.dart'; // TAMBAHAN MODUL 9 [cite: 225]
+import '../../features/animation/presentation/pages/animation_page.dart'; // TAMBAHAN MODUL 10 [cite: 885]
 
 // Import State Management & DI
 import '../../features/product/presentation/cubit/product_cubit.dart';
@@ -57,10 +59,22 @@ class AppRouter {
       ),
 
       // 6. Bookmark (Isar Database - Modul 6)
-      // UBAH: Path dari '/todo' menjadi '/bookmarks' agar selaras dengan tombol di ProductPage
       GoRoute(
         path: '/bookmarks', 
         builder: (context, state) => const BookmarkPage(),
+      ),
+
+      // 7. Background Processing Settings (WorkManager - Modul 9) [cite: 227]
+      GoRoute(
+        path: '/sync', 
+        builder: (context, state) => const BackgroundSyncPage(), [cite: 229]
+      ),
+
+      // 8. Advanced Animations & Lottie (Modul 10) [cite: 662, 663, 887]
+      // TAMBAHAN MODUL 10 [cite: 887]
+      GoRoute(
+        path: '/animation', [cite: 889]
+        builder: (context, state) => const AnimationPage(), [cite: 890]
       ),
     ],
 
