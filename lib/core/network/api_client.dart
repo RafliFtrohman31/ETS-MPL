@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
+import '../config/env_config.dart'; // TAMBAHAN MODUL 11: Import config agar baseUrl dinamis
 
 class ApiClient {
   final Dio dio;
@@ -7,11 +8,12 @@ class ApiClient {
 
   ApiClient() : dio = Dio() {
     // 1. Konfigurasi Dasar
-    dio.options.baseUrl = 'https://fakestoreapi.com'; // API Produk untuk ETS
-    dio.options.connectTimeout = const Duration(seconds: 10);
+    // SEKARANG BASE URL BERUBAH SECARA OTOMATIS SESUAI FLAVOR!
+    dio.options.baseUrl = EnvConfig.baseUrl; // UBAH DI SINI (Modul 11) 
+    dio.options.connectTimeout = const Duration(seconds: 10); [cite: 566]
     dio.options.receiveTimeout = const Duration(seconds: 10);
 
-    // 2. Pasang Interceptor (Satpam)[cite: 4]
+    // 2. Pasang Interceptor (Satpam)
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
