@@ -61,7 +61,7 @@ class DetailPage extends StatelessWidget {
                           children: [
                             Text(
                               "NIM: 20123048",
-                              style: TextStyle(color: primaryColor.withOpacity(0.6), fontWeight: FontWeight.w600, fontSize: 12),
+                              style: TextStyle(color: primaryColor.withValues(alpha: 0.6), fontWeight: FontWeight.w600, fontSize: 12),
                             ),
                             const SizedBox(height: 8),
                             Text(
@@ -141,7 +141,7 @@ class DetailPage extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, -5))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha:  0.05), blurRadius: 20, offset: const Offset(0, -5))],
       ),
       child: SafeArea(
         child: Row(

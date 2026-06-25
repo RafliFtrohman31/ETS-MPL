@@ -67,14 +67,14 @@ class AppRouter {
       // 7. Background Processing Settings (WorkManager - Modul 9) [cite: 227]
       GoRoute(
         path: '/sync', 
-        builder: (context, state) => const BackgroundSyncPage(), [cite: 229]
+        builder: (context, state) => const BackgroundSyncPage(),
       ),
 
       // 8. Advanced Animations & Lottie (Modul 10) [cite: 662, 663, 887]
       // TAMBAHAN MODUL 10 [cite: 887]
       GoRoute(
-        path: '/animation', [cite: 889]
-        builder: (context, state) => const AnimationPage(), [cite: 890]
+        path: '/animation',
+        builder: (context, state) => const AnimationPage(), 
       ),
     ],
 

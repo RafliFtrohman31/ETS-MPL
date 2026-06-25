@@ -1,0 +1,44 @@
+name: UTD Advanced CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download / Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+
+    - name: Install Dependencies
+      run: flutter pub get
+
+    - name: Run Build Runner
+      run: flutter pub run build_runner build --delete-conflicting-outputs
+
+    - name: Run Automated Tests
+      run: flutter test
+
+    - name: Build APK Release
+      run: flutter build apk --release
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: UTD-Advanced-Release-APK
+        path: build/app/outputs/flutter-apk/app-release.apk

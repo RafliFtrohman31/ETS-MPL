@@ -10,7 +10,7 @@ class ApiClient {
     // 1. Konfigurasi Dasar
     // SEKARANG BASE URL BERUBAH SECARA OTOMATIS SESUAI FLAVOR!
     dio.options.baseUrl = EnvConfig.baseUrl; // UBAH DI SINI (Modul 11) 
-    dio.options.connectTimeout = const Duration(seconds: 10); [cite: 566]
+    dio.options.connectTimeout = const Duration(seconds: 10); 
     dio.options.receiveTimeout = const Duration(seconds: 10);
 
     // 2. Pasang Interceptor (Satpam)
