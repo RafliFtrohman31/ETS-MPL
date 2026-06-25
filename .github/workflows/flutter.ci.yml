@@ -11,34 +11,58 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Download / Checkout Code
-      uses: actions/checkout@v3
+      # 1. Mengunduh kode proyek ke server virtual
+      - name: Download / Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Setup Java JDK
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
+      # 2. Setup Lingkungan Java JDK 17
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        channel: 'stable'
+      # 2b. Mendecode Keystore tepat ke folder android/app/ (Sama seperti lokalmu!)
+      - name: Decode Keystore File
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'upload-keystore.jks'
+          fileDir: './android/app/'
+          encodedString: '${{ secrets.KEYSTORE_BASE64 }}'
 
-    - name: Install Dependencies
-      run: flutter pub get
+      # 2c. Menyusun Key Properties langsung di folder android/ (Sama seperti lokalmu!)
+      - name: Create Key Properties
+        run: |
+          echo "storePassword=android" > android/key.properties
+          echo "keyPassword=android" >> android/key.properties
+          echo "keyAlias=upload" >> android/key.properties
+          echo "storeFile=upload-keystore.jks" >> android/key.properties
 
-    - name: Run Build Runner
-      run: flutter pub run build_runner build --delete-conflicting-outputs
+      # 3. Menginstal Flutter SDK Stable
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
 
-    - name: Run Automated Tests
-      run: flutter test
+      # 4. Mengunduh dependencies sesuai pubspec.yaml
+      - name: Install Dependencies
+        run: flutter pub get
 
-    - name: Build APK Release
-      run: flutter build apk --release
+      # 5. Membangun ulang file otomatis kode generasi Isar (build_runner)
+      - name: Run Build Runner
+        run: flutter pub run build_runner build --delete-conflicting-outputs
 
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: UTD-Advanced-Release-APK
-        path: build/app/outputs/flutter-apk/app-release.apk
+      # 6. Menjalankan Uji Otomatis (Unit/Widget Test)
+      - name: Run Automated Tests
+        run: flutter test
+
+      # 7. Membangun file APK versi Release resmi
+      - name: Build APK Release
+        run: flutter build apk --release
+
+      # 8. Mengunggah APK ke Halaman GitHub Artifacts
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: UTD-Advanced-Release-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
